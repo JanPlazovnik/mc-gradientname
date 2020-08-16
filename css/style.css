@@ -1,0 +1,52 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Roboto', sans-serif;
+}
+
+body {
+  background: rgb(255, 255, 255);
+  color: #000000;
+}
+
+.container {
+  max-width: 500px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.pickers {
+  display: flex;
+  justify-content: space-between;
+}
+
+.wheelpicker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.wheelpicker h3 {
+  margin: 20px 0;
+}
+
+#name,
+input[type="submit"] {
+  margin: 10px 0;
+  padding: 10px;
+  border-radius: 3px;
+  outline: none;
+  border: 1px solid #ccc;
+  width: 100%;
+}
+
+.js-preview {
+  text-align: center;
+  font-size: 1.25rem;
+}
+
+.js-result {
+  word-wrap: break-word;
+  margin: 10px 0;
+}
