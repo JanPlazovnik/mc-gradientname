@@ -45,6 +45,8 @@ input[type="submit"] {
 .js-preview {
   text-align: center;
   font-size: 1.25rem;
+  word-wrap: break-word;
+  margin: 10px 0;
 }
 
 .js-result {
