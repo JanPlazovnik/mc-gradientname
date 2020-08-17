@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta charset="utf-8">
   <title>Minecraft RGB Name Generator</title>
-  <link rel="stylesheet" href="./css/style.css?version=1.2">
+  <link rel="stylesheet" href="./css/style.css?version=1.3">
 </head>
 <body>
   <div class="container">
@@ -22,18 +22,18 @@
       </div>
     </div>
     <input class="js-username" type="text" id="name" required placeholder="Enter your username..">
-    <input class="js-click" type="submit" value="go get em">
+    <!-- <input class="js-click" type="submit" value="go get em"> -->
     <div class="js-preview"></div>
     <p class="js-result"></p>
   </div>
-  <script src="./js/colors.js?version=1.2"></script>
+  <script src="./js/colors.js?version=1.3"></script>
   <script src="./js/iro.js"></script>
   <script>
     (() => {
       var start = new iro.ColorPicker('#picker-start', { width: 240 });
       var end = new iro.ColorPicker('#picker-end', { width: 240 });
       start.on("input:change", (c) => {
-        updateFields('js-start', c);
+        updateFields('js-start', c);       
       });
       end.on("input:change", (c) => {
         updateFields('js-end', c);
@@ -44,27 +44,41 @@
             const cp = event.target.classList.contains('js-start') ? start : end;
             cp.color.hexString = event.target.value;
             event.target.style.border = "1px solid #ccc";
+            generateColors();
           } catch(err) {
             if(event.target.value == '') event.target.style.border = "1px solid #ccc";
             else event.target.style.border = "1px solid red";
           }
         }
       });
-      document.addEventListener('click', (event) => {
-        if(!event.target.matches('.js-click')) return;
-        const username = document.getElementsByClassName('js-username')[0];
-        const preview = document.getElementsByClassName('js-preview')[0];
-        const result = document.getElementsByClassName('js-result')[0];
-        if(!username.value) return;
-        event.preventDefault();
-        const colors = getColoredName(username.value, Object.values(start.color.rgb), Object.values(end.color.rgb))
-        preview.innerHTML = colors[1];
-        result.innerHTML = colors[0].replace(/&/g, '&amp;');
-      });
+
+      // document.addEventListener('click', (event) => {
+      //   if(!event.target.matches('.js-click')) return;
+      //   const username = document.getElementsByClassName('js-username')[0];
+      //   const preview = document.getElementsByClassName('js-preview')[0];
+      //   const result = document.getElementsByClassName('js-result')[0];
+      //   if(!username.value) return;
+      //   event.preventDefault();
+      //   const colors = getColoredName(username.value, Object.values(start.color.rgb), Object.values(end.color.rgb))
+      //   preview.innerHTML = colors[1];
+      //   result.innerHTML = colors[0].replace(/&/g, '&amp;');
+      // });
+
       function updateFields(classname, c) {
         const result = document.getElementsByClassName(classname)[0];
         result.value = c.hexString;
         result.style.border = "1px solid #ccc";
+        generateColors();
+      }
+
+      function generateColors() {
+        const username = document.getElementsByClassName('js-username')[0];
+        const preview = document.getElementsByClassName('js-preview')[0];
+        const result = document.getElementsByClassName('js-result')[0];
+        if (!username.value) return;
+        const colors = getColoredName(username.value, Object.values(start.color.rgb), Object.values(end.color.rgb))
+        preview.innerHTML = colors[1];
+        result.innerHTML = colors[0].replace(/&/g, '&amp;');
       }
     })();
   </script>
