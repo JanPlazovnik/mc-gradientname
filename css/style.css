@@ -11,14 +11,19 @@ body {
 }
 
 .container {
-  max-width: 500px;
+  max-width: 560px;
   width: 100%;
   margin: 0 auto;
+}
+
+.large {
+  max-width: 750px;
 }
 
 .pickers {
   display: flex;
   justify-content: space-between;
+  align-items: flex-end;
 }
 
 .wheelpicker {
@@ -40,6 +45,25 @@ input[type="submit"] {
   outline: none;
   border: 1px solid #ccc;
   width: 100%;
+}
+
+.middle {
+  display: none;
+}
+
+.js-add {
+  user-select: none;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  color: rgb(145, 145, 145);
+  cursor: pointer;
+  width: 35px;
+  font-size: 1.2em;
+  height: 35px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 100%;
 }
 
 .js-preview {

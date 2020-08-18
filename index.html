@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta charset="utf-8">
   <title>Minecraft RGB Name Generator</title>
-  <link rel="stylesheet" href="./css/style.css?version=1.4">
+  <link rel="stylesheet" href="./css/style.css?version=1.5">
 </head>
 <body>
   <div class="container">
@@ -15,6 +15,12 @@
         <div id="picker-start"></div>
         <input type="text" class="input js-start" placeholder="Enter start hex..">
       </div>
+      <div class="wheelpicker middle">
+        <h3>Middle</h3>
+        <div id="picker-middle"></div>
+        <input type="text" class="input js-middle" placeholder="Enter start hex..">
+      </div>
+      <span class="js-add">+</span>
       <div class="wheelpicker">
         <h3>End</h3>
         <div id="picker-end"></div>
@@ -22,7 +28,6 @@
       </div>
     </div>
     <input class="js-username" type="text" id="name" required placeholder="Enter your username..">
-    <!-- <input class="js-click" type="submit" value="go get em"> -->
     <div class="js-preview"></div>
     <p class="js-result"></p>
   </div>
@@ -30,19 +35,26 @@
   <script src="./js/iro.js"></script>
   <script>
     (() => {
-      var start = new iro.ColorPicker('#picker-start', { width: 240 });
-      var end = new iro.ColorPicker('#picker-end', { width: 240 });
+      let middlePicker = false;
+      const start = new iro.ColorPicker('#picker-start', { width: 240 });
+      const middle = new iro.ColorPicker('#picker-middle', { width: 240 });
+      const end = new iro.ColorPicker('#picker-end', { width: 240 });
+      const container = document.getElementsByClassName('container')[0];
       start.on("input:change", (c) => {
         updateFields('js-start', c);       
+      });
+      middle.on("input:change", (c) => {
+        updateFields('js-middle', c);
       });
       end.on("input:change", (c) => {
         updateFields('js-end', c);
       });
       document.addEventListener('input', (event) => {
         if(event.target.matches('.js-username')) generateColors();
-        if(event.target.matches('.js-start') || event.target.matches('.js-end')) {
+        if(event.target.matches('.js-start') || event.target.matches('.js-middle') || event.target.matches('.js-end')) {
           try {
-            const cp = event.target.classList.contains('js-start') ? start : end;
+            // const cp = event.target.classList.contains('js-start') ? start : end;
+            const cp = event.target.classList.contains('js-start') ? start : event.target.classList.contains('js-middle') ? middle : end;
             cp.color.hexString = event.target.value;
             event.target.style.border = "1px solid #ccc";
             generateColors();
@@ -53,17 +65,14 @@
         }
       });
 
-      // document.addEventListener('click', (event) => {
-      //   if(!event.target.matches('.js-click')) return;
-      //   const username = document.getElementsByClassName('js-username')[0];
-      //   const preview = document.getElementsByClassName('js-preview')[0];
-      //   const result = document.getElementsByClassName('js-result')[0];
-      //   if(!username.value) return;
-      //   event.preventDefault();
-      //   const colors = getColoredName(username.value, Object.values(start.color.rgb), Object.values(end.color.rgb))
-      //   preview.innerHTML = colors[1];
-      //   result.innerHTML = colors[0].replace(/&/g, '&amp;');
-      // });
+      document.addEventListener('click', (event) => {
+        if(!event.target.matches('.js-add')) return;
+        middlePicker = true;
+        const cpMiddle = document.getElementsByClassName('middle')[0];
+        event.target.style.display = 'none';
+        cpMiddle.style.display = 'flex';
+        container.classList.add('large');
+      });
 
       function updateFields(classname, c) {
         const result = document.getElementsByClassName(classname)[0];
@@ -77,9 +86,25 @@
         const preview = document.getElementsByClassName('js-preview')[0];
         const result = document.getElementsByClassName('js-result')[0];
         if (!username.value) return;
-        const colors = getColoredName(username.value, Object.values(start.color.rgb), Object.values(end.color.rgb))
-        preview.innerHTML = colors[1];
-        result.innerHTML = colors[0].replace(/&/g, '&amp;');
+        const str = username.value;
+        if(middlePicker) {
+          const halfStringStart = str.substring(0, str.length/2);
+          const halfStringEnd = str.substring(str.length/2);
+          const halfGradientStart = getColoredName(halfStringStart, cg(start.color.rgb), cg(middle.color.rgb));
+          const halfGradientEnd = getColoredName(halfStringEnd, cg(middle.color.rgb), cg(end.color.rgb));
+          const previewCombined = halfGradientStart[1] + halfGradientEnd[1];
+          const resultCombined = (halfGradientStart[0] + halfGradientEnd[0]).replace(/&/g, '&amp;');
+          preview.innerHTML = previewCombined;
+          result.innerHTML = resultCombined;
+        } else {
+          const colors = getColoredName(str, cg(start.color.rgb), cg(end.color.rgb))
+          preview.innerHTML = colors[1];
+          result.innerHTML = colors[0].replace(/&/g, '&amp;');
+        }
+      }
+
+      function cg(values) {
+        return Object.values(values);
       }
     })();
   </script>
