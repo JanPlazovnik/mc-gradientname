@@ -13,21 +13,22 @@
       <div class="wheelpicker">
         <h3>Beginning</h3>
         <div id="picker-start"></div>
-        <input type="text" class="input js-start" placeholder="Enter start hex..">
+        <input type="text" class="input js-start" placeholder="Enter start hex">
       </div>
       <div class="wheelpicker middle">
         <h3>Middle</h3>
         <div id="picker-middle"></div>
-        <input type="text" class="input js-middle" placeholder="Enter start hex..">
+        <input type="text" class="input js-middle" placeholder="Enter start hex">
       </div>
       <span class="js-add">+</span>
       <div class="wheelpicker">
         <h3>End</h3>
         <div id="picker-end"></div>
-        <input type="text" class="input js-end" placeholder="Enter end hex..">
+        <input type="text" class="input js-end" placeholder="Enter end hex">
       </div>
     </div>
-    <input class="js-username" type="text" id="name" required placeholder="Enter your username..">
+    <input class="js-share" type="text" id="name" required placeholder="Share this gradient">
+    <input class="js-username" type="text" id="name" required placeholder="Enter your username">
     <div class="js-preview"></div>
     <p class="js-result"></p>
   </div>
@@ -35,13 +36,44 @@
   <script src="./js/iro.js"></script>
   <script>
     (() => {
+      let params = new URLSearchParams(window.location.search);
       let middlePicker = false;
       const start = new iro.ColorPicker('#picker-start', { width: 240 });
       const middle = new iro.ColorPicker('#picker-middle', { width: 240 });
       const end = new iro.ColorPicker('#picker-end', { width: 240 });
       const container = document.getElementsByClassName('container')[0];
+      const addBtn = document.getElementsByClassName('js-add')[0];
+      const shareURL = document.getElementsByClassName('js-share')[0];
+
+      function addMiddlePicker() {
+        middlePicker = true;
+        const cpMiddle = document.getElementsByClassName('middle')[0];
+        addBtn.style.display = 'none';
+        cpMiddle.style.display = 'flex';
+        container.classList.add('large');        
+      }
+
+      if (params.has('c1')) {
+        start.color.hexString = `#${params.get('c1')}`;
+        updateFields('js-start', start.color);       
+      }
+      if (params.has('c2')) {
+        addMiddlePicker();
+        middle.color.hexString = `#${params.get('c2')}`;
+        updateFields('js-middle', middle.color);
+      }
+      if (params.has('c3')) {
+        end.color.hexString = `#${params.get('c3')}`;
+        updateFields('js-end', end.color);
+      }
+      if (params.has('u')) {
+        console.log(params.get('u'));
+        document.getElementsByClassName('js-username')[0].value = params.get('u');
+        generateColors();
+      }
+
       start.on("input:change", (c) => {
-        updateFields('js-start', c);       
+        updateFields('js-start', c);
       });
       middle.on("input:change", (c) => {
         updateFields('js-middle', c);
@@ -49,11 +81,11 @@
       end.on("input:change", (c) => {
         updateFields('js-end', c);
       });
+
       document.addEventListener('input', (event) => {
         if(event.target.matches('.js-username')) generateColors();
         if(event.target.matches('.js-start') || event.target.matches('.js-middle') || event.target.matches('.js-end')) {
           try {
-            // const cp = event.target.classList.contains('js-start') ? start : end;
             const cp = event.target.classList.contains('js-start') ? start : event.target.classList.contains('js-middle') ? middle : end;
             cp.color.hexString = event.target.value;
             event.target.style.border = "1px solid #ccc";
@@ -67,11 +99,7 @@
 
       document.addEventListener('click', (event) => {
         if(!event.target.matches('.js-add')) return;
-        middlePicker = true;
-        const cpMiddle = document.getElementsByClassName('middle')[0];
-        event.target.style.display = 'none';
-        cpMiddle.style.display = 'flex';
-        container.classList.add('large');
+        addMiddlePicker();
       });
 
       function updateFields(classname, c) {
@@ -85,6 +113,7 @@
         const username = document.getElementsByClassName('js-username')[0];
         const preview = document.getElementsByClassName('js-preview')[0];
         const result = document.getElementsByClassName('js-result')[0];
+        shareURL.value = getShareURL(start, middle, end, username);
         if (!username.value) return;
         const str = username.value;
         if(middlePicker) {
