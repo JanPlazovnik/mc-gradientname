@@ -25,6 +25,6 @@ function getShareURL(start, middle, end, username, middlePicker) {
     share += `&c2=${middle.color.hexString.split('#')[1]}`;
   share += `&c3=${end.color.hexString.split('#')[1]}`;
   if (username.value != "")
-    share += `&u=${username.value}`;
+    share += `&u=${username.value.replace(/ /g, "%20")}`;
   return share;
 }
