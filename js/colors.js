@@ -18,11 +18,13 @@ function getColoredName(str, col1, col2) {
 function getURLQuery() {
   return new URLSearchParams(window.location.search);
 }
-function getShareURL(start, middle, end, username) {
+function getShareURL(start, middle, end, username, middlePicker) {
   let share = `${window.location.origin + window.location.pathname}`;
   share += `?c1=${start.color.hexString.split('#')[1]}`;
-  share += `&c2=${middle.color.hexString.split('#')[1]}`;
+  if (middlePicker)
+    share += `&c2=${middle.color.hexString.split('#')[1]}`;
   share += `&c3=${end.color.hexString.split('#')[1]}`;
-  share += `&u=${username.value}`;
+  if (username.value != "")
+    share += `&u=${username.value}`;
   return share;
 }

@@ -67,7 +67,6 @@
         updateFields('js-end', end.color);
       }
       if (params.has('u')) {
-        console.log(params.get('u'));
         document.getElementsByClassName('js-username')[0].value = params.get('u');
         generateColors();
       }
@@ -113,7 +112,7 @@
         const username = document.getElementsByClassName('js-username')[0];
         const preview = document.getElementsByClassName('js-preview')[0];
         const result = document.getElementsByClassName('js-result')[0];
-        shareURL.value = getShareURL(start, middle, end, username);
+        shareURL.value = getShareURL(start, middle, end, username, middlePicker);
         if (!username.value) return;
         const str = username.value;
         if(middlePicker) {
